@@ -47,7 +47,7 @@ export class App extends React.Component<{}, AppState> {
     value: Color["value"],
     isPredefined = false
   ): Color => {
-    return { value, isPredefined };
+    return { id: Math.random().toString(), value, isPredefined };
   };
 
   public addSquare = (value: Color["value"]): void => {
@@ -64,7 +64,7 @@ export class App extends React.Component<{}, AppState> {
         <AddSquareForm addSquare={this.addSquare} />
         <section className="square-container">
           {this.state.colors.map((color) => (
-            <Square {...color} />
+            <Square key={color.id} {...color} />
           ))}
         </section>
       </main>
