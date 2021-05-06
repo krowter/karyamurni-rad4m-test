@@ -1,4 +1,4 @@
-import { Color } from "types";
+import { Color, ColorFilter } from "types";
 
 export const createRandomId = (): string => Math.random().toString();
 
@@ -12,7 +12,24 @@ export const validateColorInput = (color: string) => {
   return pattern.test(color);
 };
 
-const parseHexColor = (hex: Color["value"]) => {
+const calculateSaturation = ({
+  r,
+  g,
+  b,
+}: {
+  r: number;
+  g: number;
+  b: number;
+}) => {
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+
+  //formula reference:
+  //http://help.cognex.com/Content/KB_Topics/In-Sight/ToolsFunctions/696.htm
+  return (max - min) / (max + min);
+};
+
+export const parseHexColor = (hex: Color["value"]) => {
   let r, g, b;
   if (hex.length === 4) {
     r = hex[1].repeat(2);
@@ -28,7 +45,8 @@ const parseHexColor = (hex: Color["value"]) => {
   g = parseInt(g, 16);
   b = parseInt(b, 16);
 
-  return { r, g, b };
+  const saturation = calculateSaturation({ r, g, b });
+  return { r, g, b, saturation };
 };
 
 export const sortColors = (colors: Color[]) => {
@@ -36,8 +54,6 @@ export const sortColors = (colors: Color[]) => {
     const color1 = parseHexColor(_color1.value);
     const color2 = parseHexColor(_color2.value);
 
-    console.log(color1);
-    console.log(color2);
     if (color1.r !== color2.r) return color2.r - color1.r;
     if (color1.g !== color2.g) return color2.g - color1.g;
     return color2.b - color1.b;
@@ -45,3 +61,9 @@ export const sortColors = (colors: Color[]) => {
 
   return colors.sort(compareFunction);
 };
+
+export const reduceFilters = (filters: ColorFilter[], initialValue: Color[]) =>
+  filters.reduce(
+    (result, currentFilter) => result.filter(currentFilter),
+    initialValue
+  );

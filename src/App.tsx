@@ -5,11 +5,12 @@ import { Square } from "./components/Square";
 import { AddSquareForm } from "./components/forms/AddSquareForm";
 import { FilterColorForm } from "./components/forms/FilterColorForm";
 
-import { createRandomId, sortColors } from "./helpers";
-import { Color } from "./types";
+import { createRandomId, sortColors, reduceFilters } from "./helpers";
+import { Color, ColorFilter } from "./types";
 
 interface AppState {
   colors: Color[];
+  filters: ((color: Color) => boolean)[];
 }
 
 const predefinedColors = [
@@ -43,9 +44,9 @@ export class App extends React.Component<{}, AppState> {
     );
     this.state = {
       colors: initialColors,
+      filters: [],
     };
   }
-
   private _createColorValue = (
     value: Color["value"],
     isPredefined = false
@@ -80,12 +81,21 @@ export class App extends React.Component<{}, AppState> {
   }
 
   render() {
+    const { filters, colors } = this.state;
+    const filteredColors = reduceFilters(filters, colors);
+    const sortedColors = sortColors(filteredColors);
+
+    const changeFilterCallback = async (filters: ColorFilter[]) => {
+      await this.setState({ filters });
+      this.fillColors();
+    };
+
     return (
       <main>
         <AddSquareForm addSquare={this.addSquare} />
-        <FilterColorForm filterColor={this.addSquare} />
+        <FilterColorForm changeFilter={changeFilterCallback} />
         <section className="square-container">
-          {sortColors(this.state.colors).map((color) => (
+          {sortedColors.map((color) => (
             <Square key={color.id} {...color} />
           ))}
         </section>

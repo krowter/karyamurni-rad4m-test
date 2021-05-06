@@ -3,3 +3,5 @@ export interface Color {
   value: string;
   isPredefined: boolean;
 }
+
+export type ColorFilter = (color: Color) => boolean;
