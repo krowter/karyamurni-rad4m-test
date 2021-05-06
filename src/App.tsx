@@ -3,7 +3,9 @@ import "./App.scss";
 
 import { Square } from "./components/Square";
 import { AddSquareForm } from "./components/forms/AddSquareForm";
+import { FilterColorForm } from "./components/forms/FilterColorForm";
 
+import { createRandomId } from "./helpers";
 import { Color } from "./types";
 
 interface AppState {
@@ -47,7 +49,7 @@ export class App extends React.Component<{}, AppState> {
     value: Color["value"],
     isPredefined = false
   ): Color => {
-    return { id: Math.random().toString(), value, isPredefined };
+    return { id: createRandomId(), value, isPredefined };
   };
 
   public addSquare = (value: Color["value"]): void => {
@@ -62,6 +64,7 @@ export class App extends React.Component<{}, AppState> {
     return (
       <main>
         <AddSquareForm addSquare={this.addSquare} />
+        <FilterColorForm filterColor={this.addSquare} />
         <section className="square-container">
           {this.state.colors.map((color) => (
             <Square key={color.id} {...color} />

@@ -1,8 +1,23 @@
+// RESETS
+
+fieldset {
+  border: none;
+  padding: 1rem 0;
+}
+
+// SECTIONS
+
 .add-square-form {
   display: flex;
   width: 100%;
 
   * {
+    margin-right: 1rem;
+  }
+}
+
+.filter-color-form {
+  input {
     margin-right: 1rem;
   }
 }
