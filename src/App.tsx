@@ -39,6 +39,8 @@ const predefinedColors = [
 export class App extends React.Component<{}, AppState> {
   public constructor(props: never) {
     super(props);
+
+    // predetermined colors can't be removed (i.e don't have X button)
     const initialColors = (predefinedColors ?? []).map((color) =>
       this._createColorValue(color, true)
     );
@@ -54,7 +56,7 @@ export class App extends React.Component<{}, AppState> {
     return { id: createRandomId(), value, isPredefined };
   };
 
-  private fillColors = () => {
+  private _fillColors = () => {
     const squares = document.body.querySelectorAll(
       ".color-preview[data-color]"
     );
@@ -73,11 +75,11 @@ export class App extends React.Component<{}, AppState> {
       colors: [...prevState.colors, newColor],
     }));
 
-    this.fillColors();
+    this._fillColors();
   };
 
   componentDidMount() {
-    this.fillColors();
+    this._fillColors();
   }
 
   render() {
@@ -87,7 +89,11 @@ export class App extends React.Component<{}, AppState> {
 
     const changeFilterCallback = async (filters: ColorFilter[]) => {
       await this.setState({ filters });
-      this.fillColors();
+      this._fillColors();
+    };
+
+    const removeSquareCallback = (id: string) => {
+      this.setState({ colors: colors.filter((color) => color.id !== id) });
     };
 
     return (
@@ -96,7 +102,11 @@ export class App extends React.Component<{}, AppState> {
         <FilterColorForm changeFilter={changeFilterCallback} />
         <section className="square-container">
           {sortedColors.map((color) => (
-            <Square key={color.id} {...color} />
+            <Square
+              key={color.id}
+              {...color}
+              removeSquare={removeSquareCallback}
+            />
           ))}
         </section>
       </main>
