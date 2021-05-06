@@ -5,7 +5,7 @@ import { Square } from "./components/Square";
 import { AddSquareForm } from "./components/forms/AddSquareForm";
 import { FilterColorForm } from "./components/forms/FilterColorForm";
 
-import { createRandomId } from "./helpers";
+import { createRandomId, sortColors } from "./helpers";
 import { Color } from "./types";
 
 interface AppState {
@@ -38,10 +38,11 @@ const predefinedColors = [
 export class App extends React.Component<{}, AppState> {
   public constructor(props: never) {
     super(props);
+    const initialColors = (predefinedColors ?? []).map((color) =>
+      this._createColorValue(color, true)
+    );
     this.state = {
-      colors: (predefinedColors ?? []).map((color) =>
-        this._createColorValue(color, true)
-      ),
+      colors: sortColors(initialColors),
     };
   }
 
@@ -68,7 +69,7 @@ export class App extends React.Component<{}, AppState> {
     const newColor = this._createColorValue(value);
 
     await this.setState((prevState) => ({
-      colors: [...prevState.colors, newColor],
+      colors: sortColors([...prevState.colors, newColor]),
     }));
 
     this.fillColors();
