@@ -26,7 +26,7 @@ const calculateSaturation = ({
 
   //formula reference:
   //http://help.cognex.com/Content/KB_Topics/In-Sight/ToolsFunctions/696.htm
-  return (max - min) / (max + min);
+  return ((max - min) / (max + min)) * 100;
 };
 
 export const parseHexColor = (hex: Color["value"]) => {
