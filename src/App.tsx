@@ -42,7 +42,7 @@ export class App extends React.Component<{}, AppState> {
       this._createColorValue(color, true)
     );
     this.state = {
-      colors: sortColors(initialColors),
+      colors: initialColors,
     };
   }
 
@@ -69,7 +69,7 @@ export class App extends React.Component<{}, AppState> {
     const newColor = this._createColorValue(value);
 
     await this.setState((prevState) => ({
-      colors: sortColors([...prevState.colors, newColor]),
+      colors: [...prevState.colors, newColor],
     }));
 
     this.fillColors();
@@ -85,7 +85,7 @@ export class App extends React.Component<{}, AppState> {
         <AddSquareForm addSquare={this.addSquare} />
         <FilterColorForm filterColor={this.addSquare} />
         <section className="square-container">
-          {this.state.colors.map((color) => (
+          {sortColors(this.state.colors).map((color) => (
             <Square key={color.id} {...color} />
           ))}
         </section>
