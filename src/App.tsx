@@ -5,6 +5,7 @@ import { Square } from "./components/Square";
 import { AddSquareForm } from "./components/forms/AddSquareForm";
 import { FilterColorForm } from "./components/forms/FilterColorForm";
 
+import { ColorStorage } from "storage";
 import { createRandomId, sortColors, reduceFilters } from "./helpers";
 import { Color, ColorFilter } from "./types";
 
@@ -37,18 +38,26 @@ const predefinedColors = [
 ];
 
 export class App extends React.Component<{}, AppState> {
+  public storage: ColorStorage;
+
   public constructor(props: never) {
     super(props);
+
+    this.storage = new ColorStorage("local-colors");
+
+    const localColors = this.storage.getAllColors();
 
     // predetermined colors can't be removed (i.e don't have X button)
     const initialColors = (predefinedColors ?? []).map((color) =>
       this._createColorValue(color, true)
     );
+
     this.state = {
-      colors: initialColors,
+      colors: initialColors.concat(localColors),
       filters: [],
     };
   }
+
   private _createColorValue = (
     value: Color["value"],
     isPredefined = false
@@ -75,6 +84,8 @@ export class App extends React.Component<{}, AppState> {
       colors: [...prevState.colors, newColor],
     }));
 
+    this.storage.addColor(newColor);
+
     this._fillColors();
   };
 
@@ -94,6 +105,7 @@ export class App extends React.Component<{}, AppState> {
 
     const removeSquareCallback = (id: string) => {
       this.setState({ colors: colors.filter((color) => color.id !== id) });
+      this.storage.remove(id);
     };
 
     return (
