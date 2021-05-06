@@ -52,6 +52,18 @@ export class App extends React.Component<{}, AppState> {
     return { id: createRandomId(), value, isPredefined };
   };
 
+  private fillColors = () => {
+    const squares = document.body.querySelectorAll(
+      ".color-preview[data-color]"
+    );
+
+    [...squares].forEach((_square) => {
+      const square = _square as HTMLElement;
+      const color = square.dataset.color as string;
+      square.style.background = color;
+    });
+  };
+
   public addSquare = (value: Color["value"]): void => {
     const newColor = this._createColorValue(value);
 
@@ -59,6 +71,10 @@ export class App extends React.Component<{}, AppState> {
       colors: [...prevState.colors, newColor],
     }));
   };
+
+  componentDidMount() {
+    this.fillColors();
+  }
 
   render() {
     return (
