@@ -64,12 +64,14 @@ export class App extends React.Component<{}, AppState> {
     });
   };
 
-  public addSquare = (value: Color["value"]): void => {
+  public addSquare = async (value: Color["value"]) => {
     const newColor = this._createColorValue(value);
 
-    this.setState((prevState) => ({
+    await this.setState((prevState) => ({
       colors: [...prevState.colors, newColor],
     }));
+
+    this.fillColors();
   };
 
   componentDidMount() {
